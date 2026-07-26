@@ -9,11 +9,17 @@ SIM ?= vcs
 SRC_DIR = src
 TB_DIR = tb
 
-# Package name (archway_core_pkg, bus_pkg)
+# Package name (archway_core_pkg, bus_pkg, map_pkg, archway_pkg)
 PKG ?= bus_pkg
 
-# Test name (test_archway_config_base, test_bus_pkg)
+# Test name (test_archway_config_base, test_bus_pkg, test_map_pkg, test_archway_pkg)
 TEST ?= test_bus_pkg
+
+# Source files for compilation (all packages)
+SRC_FILES = src/archway_core_pkg/archway_core_pkg.sv \
+            src/bus_pkg/bus_pkg.sv \
+            src/map_pkg/map_pkg.sv \
+            src/archway_pkg/archway_pkg.sv
 
 # =============================================================================
 # Simulator-specific settings
@@ -56,8 +62,11 @@ all: compile run
 compile:
 	@echo "=== Compiling $(PKG) ==="
 	$(COMPILE) $(COMPILE_OPTS) \
-		+incdir+$(SRC_DIR)/$(PKG) \
-		$(SRC_DIR)/$(PKG)/$(PKG).sv \
+		+incdir+$(SRC_DIR)/archway_core_pkg \
+		+incdir+$(SRC_DIR)/bus_pkg \
+		+incdir+$(SRC_DIR)/map_pkg \
+		+incdir+$(SRC_DIR)/archway_pkg \
+		$(SRC_FILES) \
 		$(TB_DIR)/$(PKG)/$(TEST).sv \
 		-o simv_$(PKG)
 
