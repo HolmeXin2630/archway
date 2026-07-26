@@ -9,16 +9,16 @@ views:
   core0:
     regions:
       uart0:
-        base: 2147483648  # 0x80000000
-        size: 4096        # 0x1000
+        base: 0x80000000
+        size: 0x1000
       spi0:
-        base: 2147487744  # 0x80001000
-        size: 4096        # 0x1000
+        base: 0x80001000
+        size: 0x1000
   core1:
     regions:
       uart0:
-        base: 1073741824  # 0x40000000
-        size: 4096        # 0x1000
+        base: 0x40000000
+        size: 0x1000
       uart1:
-        base: 1073745920  # 0x40001000
-        size: 4096        # 0x1000
+        base: 0x40001000
+        size: 0x1000
