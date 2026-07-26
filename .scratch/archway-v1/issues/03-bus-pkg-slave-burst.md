@@ -4,12 +4,12 @@
 
 **Blocked by:** 02 — bus_pkg 核心总线访问
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] 实现 `bus_slave_handle` 基类（extends uvm_object）
-- [ ] 实现 `BUS` Facade 的 slave 相关方法：`register_slave()`、`has_slave()`、`slave()`
-- [ ] 实现 `get_slave_names()` 枚举方法
-- [ ] 实现 burst 主接口：`burst_write()`、`burst_read()`
-- [ ] 实现 burst 检查接口：`try_burst_write()`、`try_burst_read()`
-- [ ] 支持 burst 类型：SINGLE、INCR、WRAP、FIXED
-- [ ] 验证：创建测试 slave handle，验证 slave 注册/枚举 + burst 读写流程
+- [x] 实现 `bus_slave_handle` 基类（extends uvm_object）
+- [x] 实现 `BUS` Facade 的 slave 相关方法：`register_slave()`、`has_slave()`、`slave()`
+- [x] 实现 `get_slave_names()` 枚举方法
+- [x] 实现 burst 主接口：`burst_write()`、`burst_read()`
+- [x] 实现 burst 检查接口：`try_burst_write()`、`try_burst_read()`
+- [x] 支持 burst 类型：SINGLE、INCR、WRAP、FIXED
+- [x] 验证：创建测试 slave handle，验证 slave 注册/枚举 + burst 读写流程

@@ -4,13 +4,13 @@
 
 **Blocked by:** 01 — archway_core_pkg
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] 创建 `map_pkg` package
-- [ ] 定义公共类型：`map_addr_t`、`map_status_e`
-- [ ] 实现 `map_region` 类（target、base、size）
-- [ ] 实现 `map_view` 类：`add_region()`、`get_region()`、`has_region()`、`get_base()`
-- [ ] 实现 `MAP` Facade：`register_view()`、`has_view()`、`view()`
-- [ ] 实现 `get_view_names()` 枚举方法
-- [ ] 支持作用域写法（如 `chip0.core0`），v1 按 string key 处理
-- [ ] 验证：创建测试 view，验证 view 注册/查询 + region 映射流程
+- [x] 创建 `map_pkg` package
+- [x] 定义公共类型：`map_addr_t`、`map_status_e`
+- [x] 实现 `map_region` 类（target、base、size）
+- [x] 实现 `map_view` 类：`add_region()`、`get_region()`、`has_region()`、`get_base()`
+- [x] 实现 `MAP` Facade：`register_view()`、`has_view()`、`view()`
+- [x] 实现 `get_view_names()` 枚举方法
+- [x] 支持作用域写法（如 `chip0.core0`），v1 按 string key 处理
+- [x] 验证：创建测试 view，验证 view 注册/查询 + region 映射流程
