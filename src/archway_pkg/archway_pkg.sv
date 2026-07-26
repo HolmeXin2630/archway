@@ -14,9 +14,11 @@ package archway_pkg;
   // Import dependent packages
   import bus_pkg::*;
   import map_pkg::*;
+  import sv_yaml_pkg::*;
 
   // Include archway components
   `include "archway_env.svh"
   `include "archway_facade.svh"
+  `include "config_loader.svh"
 
 endpackage

@@ -1,0 +1,15 @@
+# =============================================================================
+# Bus Configuration
+# =============================================================================
+# Example bus configuration for Archway framework.
+# Format: masters -> <master_name>, slaves -> <slave_name>
+# =============================================================================
+
+masters:
+  - core0
+  - core1
+
+slaves:
+  - uart0
+  - uart1
+  - spi0
