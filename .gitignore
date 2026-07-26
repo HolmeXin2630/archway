@@ -1,0 +1,20 @@
+# VCS generated files
+simv_*
+csrc/
+*.vpd
+*.fsdb
+*.trn
+*.dsn
+*.log
+*.history
+ucli.key
+vc_hdrs.h
+
+# Compiled output
+*.o
+*.so
+*.a
+
+# IDE files
+.vscode/
+.idea/

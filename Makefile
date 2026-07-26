@@ -9,11 +9,11 @@ SIM ?= vcs
 SRC_DIR = src
 TB_DIR = tb
 
-# Package name
-PKG = archway_core_pkg
+# Package name (archway_core_pkg, bus_pkg)
+PKG ?= bus_pkg
 
-# Test name
-TEST = test_archway_config_base
+# Test name (test_archway_config_base, test_bus_pkg)
+TEST ?= test_bus_pkg
 
 # =============================================================================
 # Simulator-specific settings
