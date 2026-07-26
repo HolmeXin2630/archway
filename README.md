@@ -82,3 +82,8 @@ Memory Map 能力，包含：
 - [框架说明摘要](docs/soc_framework_v1.md)
 - [BUS/MAP 详细设计](docs/module_bus_map.md)
 - [项目上下文](CONTEXT.md)
+- [已知问题](docs/known_issues.md)
+
+## 已知问题
+
+- sv_serde 地址解析符号扩展问题 - 当地址值超过 0x7FFFFFFF 时，as_int() 会返回符号扩展的值。详见 [known_issues.md](docs/known_issues.md)
