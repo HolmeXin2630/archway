@@ -37,7 +37,7 @@ virtual class sv_serde_base;
   pure virtual function int   dpi_new_object();
   pure virtual function int   dpi_new_array();
   pure virtual function int   dpi_create_string(string val);
-  pure virtual function int   dpi_create_int_val(int val);
+  pure virtual function int   dpi_create_int_val(longint val);
   pure virtual function int   dpi_create_float_val(real val);
   pure virtual function int   dpi_create_bool_val(int val);
   pure virtual function int   dpi_create_null();
@@ -114,6 +114,17 @@ virtual class sv_serde_base;
     if (m_strict_mode && !is_int())
       $fatal(1, "serde strict: expected int, got type %0d", m_type);
     return dpi_as_int(m_handle);
+  endfunction
+
+  // Return 64-bit unsigned value (no sign extension for addresses > 0x7FFFFFFF)
+  function longint as_uint64();
+    int val32;
+    if (m_strict_mode && !is_int())
+      $fatal(1, "serde strict: expected int, got type %0d", m_type);
+    val32 = dpi_as_int(m_handle);
+    // Zero-extend: treat as unsigned 32-bit value
+    // Use bit manipulation to avoid sign extension
+    return {32'b0, val32[31:0]};
   endfunction
 
   function real as_real();

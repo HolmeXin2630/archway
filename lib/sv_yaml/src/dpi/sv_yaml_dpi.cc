@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <thread>
 #include <climits>
+#include <cstdint>
 
 namespace ryml_ns = c4::yml;
 
@@ -24,7 +25,7 @@ struct YamlNode {
     enum Type { NULL_VAL, BOOL_VAL, INT_VAL, REAL_VAL, STRING_VAL, SEQ_VAL, MAP_VAL };
     Type type = NULL_VAL;
     std::string str_val;
-    int int_val = 0;
+    int64_t int_val = 0;  // Changed to 64-bit to support large addresses
     double real_val = 0.0;
     bool bool_val = false;
     // For MAP: ordered list of (key_handle, value_handle)
@@ -222,13 +223,9 @@ static int ryml_to_handle(const ryml_ns::Tree& tree, ryml_ns::id_type node) {
                 char* end_i = nullptr;
                 long long ival = strtoll(val.str, &end_i, 10);
                 if (end_i == val.str + val.len && val.len > 0) {
-                    if (ival > INT_MAX || ival < INT_MIN) {
-                        yn.type = YamlNode::REAL_VAL;
-                        yn.real_val = (double)ival;
-                    } else {
-                        yn.type = YamlNode::INT_VAL;
-                        yn.int_val = (int)ival;
-                    }
+                    // Store as 64-bit integer (no range check needed)
+                    yn.type = YamlNode::INT_VAL;
+                    yn.int_val = (int64_t)ival;
                 } else {
                     // Try float
                     char* end_f = nullptr;
@@ -530,12 +527,12 @@ const char* dpi_yaml_as_string(int h) {
     }
 }
 
-int dpi_yaml_as_int(int h) {
+int64_t dpi_yaml_as_int(int h) {
     const YamlNode* n = get_node(h);
     if (!n) { SET_ERROR("invalid handle: %d", h); return 0; }
     switch (n->type) {
         case YamlNode::INT_VAL:   return n->int_val;
-        case YamlNode::REAL_VAL:  return (int)n->real_val;
+        case YamlNode::REAL_VAL:  return (int64_t)n->real_val;
         case YamlNode::BOOL_VAL:  return n->bool_val ? 1 : 0;
         default: return 0;
     }
@@ -571,7 +568,7 @@ int dpi_yaml_create_string(const char* val) {
     return alloc_handle(n);
 }
 
-int dpi_yaml_create_int_val(int val) {
+int dpi_yaml_create_int_val(int64_t val) {
     YamlNode n;
     n.type = YamlNode::INT_VAL;
     n.int_val = val;

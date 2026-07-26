@@ -69,8 +69,8 @@ class config_loader;
 
             // Extract base and size
             if (region_node.contains("base") && region_node.contains("size")) begin
-              base = region_node.get("base").as_int();
-              size = region_node.get("size").as_int();
+              base = region_node.get("base").as_uint64();
+              size = region_node.get("size").as_uint64();
               view.add_region(target_name, base, size);
             end else begin
               `uvm_warning("CONFIG_LOADER",

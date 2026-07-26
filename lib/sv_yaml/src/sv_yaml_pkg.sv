@@ -34,13 +34,13 @@ package sv_yaml_pkg;
 
   // DPI imports — value extraction
   import "DPI-C" function string dpi_yaml_as_string(input int h);
-  import "DPI-C" function int    dpi_yaml_as_int(input int h);
+  import "DPI-C" function longint dpi_yaml_as_int(input int h);
   import "DPI-C" function real   dpi_yaml_as_real(input int h);
   import "DPI-C" function int    dpi_yaml_as_bool(input int h);
 
   // DPI imports — create functions
   import "DPI-C" function int    dpi_yaml_create_string(input string val);
-  import "DPI-C" function int    dpi_yaml_create_int_val(input int val);
+  import "DPI-C" function int    dpi_yaml_create_int_val(input longint val);
   import "DPI-C" function int    dpi_yaml_create_float_val(input real val);
   import "DPI-C" function int    dpi_yaml_create_bool_val(input int val);
   import "DPI-C" function int    dpi_yaml_create_null();
@@ -107,7 +107,7 @@ package sv_yaml_pkg;
     function int   dpi_new_object();              return dpi_yaml_new_object();       endfunction
     function int   dpi_new_array();               return dpi_yaml_new_array();        endfunction
     function int   dpi_create_string(string val); return dpi_yaml_create_string(val); endfunction
-    function int   dpi_create_int_val(int val);   return dpi_yaml_create_int_val(val);endfunction
+    function int   dpi_create_int_val(longint val);   return dpi_yaml_create_int_val(val);endfunction
     function int   dpi_create_float_val(real val); return dpi_yaml_create_float_val(val);endfunction
     function int   dpi_create_bool_val(int val);  return dpi_yaml_create_bool_val(val); endfunction
     function int   dpi_create_null();             return dpi_yaml_create_null();      endfunction
@@ -243,7 +243,7 @@ package sv_yaml_pkg;
       return obj;
     endfunction
 
-    static function sv_yaml from_int(int val);
+    static function sv_yaml from_int(longint val);
       sv_yaml obj;
       obj = new();
       obj.init(dpi_yaml_create_int_val(val), SERDE_INT);

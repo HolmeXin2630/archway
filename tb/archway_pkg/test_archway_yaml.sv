@@ -117,17 +117,23 @@ module test_archway_yaml;
     // Test 4: Verify map regions loaded from YAML
     $display("\n--- Test 4: Verify map regions loaded from YAML ---");
     void'(MAP::view("core0").get_region("uart0", region));
-    assert (region.base == 64'hFFFF_FFFF_8000_0000) else $fatal("Wrong base for core0.uart0: %h", region.base);
+    assert (region.base == 64'h0000_0000_8000_0000) else $fatal("Wrong base for core0.uart0: %h", region.base);
     assert (region.size == 64'h1000) else $fatal("Wrong size for core0.uart0");
+    void'(MAP::view("core0").get_region("spi0", region));
+    assert (region.base == 64'h0000_0000_8000_1000) else $fatal("Wrong base for core0.spi0: %h", region.base);
+    assert (region.size == 64'h1000) else $fatal("Wrong size for core0.spi0");
     void'(MAP::view("core1").get_region("uart0", region));
     assert (region.base == 64'h0000_0000_4000_0000) else $fatal("Wrong base for core1.uart0: %h", region.base);
     assert (region.size == 64'h1000) else $fatal("Wrong size for core1.uart0");
+    void'(MAP::view("core1").get_region("uart1", region));
+    assert (region.base == 64'h0000_0000_4000_1000) else $fatal("Wrong base for core1.uart1: %h", region.base);
+    assert (region.size == 64'h1000) else $fatal("Wrong size for core1.uart1");
     $display("PASS: Map regions loaded from YAML");
 
     // Test 5: Use MAP Facade with YAML-loaded views
     $display("\n--- Test 5: Use MAP Facade with YAML-loaded views ---");
     void'(MAP::view("core0").get_region("uart0", region));
-    assert (region.base == 64'hFFFF_FFFF_8000_0000) else $fatal("Wrong base via MAP Facade: %h", region.base);
+    assert (region.base == 64'h0000_0000_8000_0000) else $fatal("Wrong base via MAP Facade: %h", region.base);
     assert (region.size == 64'h1000) else $fatal("Wrong size via MAP Facade");
     $display("PASS: MAP Facade works with YAML-loaded views");
 

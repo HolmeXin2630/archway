@@ -1,6 +1,7 @@
 #ifndef SV_YAML_DPI_H
 #define SV_YAML_DPI_H
 
+#include <stdint.h>
 #include "serde_common.h"
 
 #ifdef __cplusplus
@@ -22,13 +23,13 @@ int dpi_yaml_get_type(int h);
 
 // Value extraction
 const char* dpi_yaml_as_string(int h);
-int dpi_yaml_as_int(int h);
+int64_t dpi_yaml_as_int(int h);
 double dpi_yaml_as_real(int h);
 int dpi_yaml_as_bool(int h);
 
 // Create functions (for from_* factory methods)
 int dpi_yaml_create_string(const char* val);
-int dpi_yaml_create_int_val(int val);
+int dpi_yaml_create_int_val(int64_t val);
 int dpi_yaml_create_float_val(double val);
 int dpi_yaml_create_bool_val(int val);
 int dpi_yaml_create_null(void);
