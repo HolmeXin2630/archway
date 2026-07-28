@@ -30,13 +30,18 @@ pip install west
 # 克隆并初始化
 git clone https://github.com/HolmeXin2630/archway.git
 cd .. && west init -l archway && west update
+
+# 下载 sv_serde 依赖
+cd lib/sv_serde && make -f run/Makefile.verilator fetch_deps
 ```
 
 ### 更新依赖
 
 ```bash
-west update    # 更新所有依赖
-west list      # 查看依赖状态
+# 删除旧版本并重新拉取
+rm -rf lib/sv_serde
+west update sv_serde
+cd lib/sv_serde && make -f run/Makefile.verilator fetch_deps
 ```
 
 ### 编译和运行
