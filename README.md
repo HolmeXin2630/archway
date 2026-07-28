@@ -85,22 +85,7 @@ Memory Map 能力，包含：
 
 本项目使用 [West](https://docs.zephyrproject.org/latest/develop/west/index.html) 管理依赖库。
 
-### sv_serde
-
-SystemVerilog JSON/YAML/INI 处理库，提供统一的 API 进行数据序列化和反序列化。
-
-- **仓库地址**: https://github.com/HolmeXin2630/sv_serde
-- **功能**: JSON、YAML、INI 解析和生成，统一 API，不可变语义
-
-**使用示例**:
-
-```systemverilog
-import sv_yaml_pkg::*;
-
-sv_yaml y = sv_yaml::parse("name: Alice\nage: 30");
-string name = y.get("name").as_string();  // "Alice"
-int age = y.get("age").as_int();          // 30
-```
+- **sv_serde** - SystemVerilog JSON/YAML/INI 处理库 ([文档](https://github.com/HolmeXin2630/sv_serde))
 
 ## 已知问题
 
