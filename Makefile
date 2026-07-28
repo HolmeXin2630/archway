@@ -16,10 +16,10 @@ PKG ?= archway_pkg
 TEST ?= test_archway_yaml
 
 # =============================================================================
-# sv_serde library paths
+# sv_serde library paths (submodule)
 # =============================================================================
-SERDE_DIR = lib/sv_serde/src
-YAML_DIR = lib/sv_yaml/src
+SERDE_DIR = lib/sv_serde/sv_serde/src
+YAML_DIR = lib/sv_serde/sv_yaml/src
 
 # SystemVerilog packages
 SERDE_PKG = $(SERDE_DIR)/sv_serde_pkg.sv
