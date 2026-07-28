@@ -7,69 +7,71 @@ Archway 是一个通用的 SoC 验证框架，旨在把 SoC 验证中每个项�
 ## 目录结构
 
 ```
-archway/
-├── src/                          # 源代码
-│   ├── archway_core_pkg/         # 核心基础类型
-│   │   ├── archway_core_pkg.sv
-│   │   └── archway_config_base.svh
-│   ├── bus_pkg/                  # 总线访问能力（待实现）
-│   ├── map_pkg/                  # Memory Map 能力（待实现）
-│   └── archway_pkg/              # 框架顶层组装（待实现）
-├── tb/                           # 测试代码
-│   └── archway_core_pkg/
-│       └── test_archway_config_base.sv
-├── lib/                          # 依赖库（Git Submodule）
+sv_proj/                          # West 工作区根目录
+├── .west/                        # West 元数据（自动创建）
+├── archway/                      # 本项目（manifest 仓库）
+│   ├── src/                      # 源代码
+│   │   ├── archway_core_pkg/     # 核心基础类型
+│   │   ├── bus_pkg/              # 总线访问能力（待实现）
+│   │   ├── map_pkg/              # Memory Map 能力（待实现）
+│   │   └── archway_pkg/          # 框架顶层组装（待实现）
+│   ├── tb/                       # 测试代码
+│   ├── docs/                     # 文档
+│   ├── west.yml                  # West manifest 文件
+│   └── Makefile                  # 构建脚本
+├── lib/                          # 依赖库（由 west 管理）
 │   └── sv_serde/                 # SystemVerilog JSON/YAML/INI 处理库
-│       ├── sv_serde/             # 核心序列化库
-│       ├── sv_json/              # JSON 支持
-│       ├── sv_yaml/              # YAML 支持
-│       └── sv_ini/               # INI 支持
-├── docs/                         # 文档
-│   ├── soc_framework_v1.md
-│   ├── module_bus_map.md
-│   ├── adr/                      # 架构决策记录
-│   └── agents/                   # Agent skills 配置
-├── .scratch/                     # Issue tracker
-│   └── archway-v1/
-│       └── issues/               # Tickets
-├── .gitmodules                   # Git Submodule 配置
-├── CLAUDE.md                     # Agent skills 配置
-├── CONTEXT.md                    # 项目上下文
-├── Makefile                      # 构建脚本
-└── README.md                     # 本文件
+└── ...                           # 其他项目
 ```
 
 ## 快速开始
 
-### 克隆仓库
-
-本项目使用 Git Submodule 管理依赖库。克隆时需要初始化 submodule：
+### 安装 West
 
 ```bash
-# 方式 1：递归克隆（推荐）
-git clone --recurse-submodules https://github.com/HolmeXin2630/archway.git
+# 方式 1：使用 pip（推荐）
+pip install west
 
-# 方式 2：克隆后手动初始化
+# 方式 2：使用虚拟环境
+python3 -m venv west-venv
+west-venv/bin/pip install west
+```
+
+### 克隆和初始化
+
+```bash
+# 克隆主仓库
 git clone https://github.com/HolmeXin2630/archway.git
-cd archway
-git submodule init
-git submodule update
+
+# 进入工作区目录（archway 的父目录）
+cd ..
+
+# 初始化 west 工作区
+west init -l archway
+
+# 更新所有依赖
+west update
 ```
 
 ### 更新依赖
 
 ```bash
-# 更新 sv_serde 到最新版本
-git submodule update --remote lib/sv_serde
+# 更新所有依赖到最新版本
+west update
 
-# 提交更新
-git add lib/sv_serde
-git commit -m "chore: update sv_serde submodule"
+# 只更新特定依赖
+west update sv_serde
+
+# 查看所有依赖状态
+west list
 ```
 
 ### 编译和运行测试
 
 ```bash
+# 进入项目目录
+cd archway
+
 # 编译并运行所有测试
 make all SIM=vcs
 
@@ -119,7 +121,7 @@ Memory Map 能力，包含：
 
 ## 依赖库
 
-本项目依赖以下库（通过 Git Submodule 管理）：
+本项目使用 [West](https://docs.zephyrproject.org/latest/develop/west/index.html) 管理依赖库。
 
 ### sv_serde
 
@@ -148,6 +150,38 @@ int age = y.get("age").as_int();          // 30
 // 修改（返回新对象）
 sv_yaml updated = y.set("name", sv_yaml::from_string("Bob"));
 ```
+
+### 添加新依赖
+
+在 `west.yml` 中添加新的项目：
+
+```yaml
+manifest:
+  remotes:
+    - name: holmexin
+      url-base: https://github.com/HolmeXin2630
+
+  projects:
+    - name: sv_serde
+      remote: holmexin
+      revision: master
+      path: lib/sv_serde
+
+    - name: sv_uvm_comps  # 新增依赖
+      remote: holmexin
+      revision: master
+      path: lib/sv_uvm_comps
+
+    - name: sv_pathlib    # 新增依赖
+      remote: holmexin
+      revision: master
+      path: lib/sv_pathlib
+
+  self:
+    path: archway
+```
+
+然后运行 `west update` 拉取新依赖。
 
 ## 已知问题
 
