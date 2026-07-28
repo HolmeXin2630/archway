@@ -1,0 +1,13 @@
+manifest:
+  remotes:
+    - name: holmexin
+      url-base: https://github.com/HolmeXin2630
+
+  projects:
+    - name: sv_serde
+      remote: holmexin
+      revision: master
+      path: lib/sv_serde
+
+  self:
+    path: archway

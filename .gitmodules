@@ -1,3 +1,0 @@
-[submodule "lib/sv_serde"]
-	path = lib/sv_serde
-	url = https://github.com/HolmeXin2630/sv_serde.git
