@@ -40,6 +40,15 @@ YAML_DPI = $(YAML_DIR)/dpi/sv_yaml_dpi.cc
 YAML_CFLAGS = -std=c++14 -I$(YAML_DIR)/dpi -I$(SERDE_DIR)/dpi
 
 # =============================================================================
+# tvip-apb library paths (managed by west, used by bus_pkg APB tests)
+# =============================================================================
+TVIP_APB_DIR = $(ROOT_DIR)/tests/bus_pkg/lib/tvip-apb/src
+TUE_DIR = $(ROOT_DIR)/tests/bus_pkg/lib/tue/src
+
+# tvip-apb needs defines for max address/data width
+TVIP_APB_DEFINES = +define+TVIP_APB_MAX_ADDRESS_WIDTH=16 +define+TVIP_APB_MAX_DATA_WIDTH=32
+
+# =============================================================================
 # Archway packages
 # =============================================================================
 ARCHWAY_CORE_PKG = $(ROOT_DIR)/src/archway_core_pkg/archway_core_pkg.sv
@@ -47,8 +56,13 @@ BUS_PKG = $(ROOT_DIR)/src/bus_pkg/bus_pkg.sv
 MAP_PKG = $(ROOT_DIR)/src/map_pkg/map_pkg.sv
 ARCHWAY_PKG = $(ROOT_DIR)/src/archway_pkg/archway_pkg.sv
 
+# tvip-apb packages (for APB backend tests)
+TUE_PKG = $(TUE_DIR)/tue_pkg.sv
+TVIP_APB_PKG = $(TVIP_APB_DIR)/tvip_apb_pkg.sv
+
 # All SV source files
-SV_FILES = $(SERDE_PKG) $(YAML_PKG) $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARCHWAY_PKG)
+SV_FILES = $(SERDE_PKG) $(YAML_PKG) $(TUE_PKG) $(TVIP_APB_PKG) \
+           $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARCHWAY_PKG)
 
 # DPI C++ source files
 DPI_FILES = $(YAML_DPI) $(SERDE_DPI)
@@ -66,7 +80,11 @@ ifeq ($(SIM),vcs)
               +incdir+$(ROOT_DIR)/src/map_pkg \
               +incdir+$(ROOT_DIR)/src/archway_pkg \
               +incdir+$(SERDE_DIR) \
-              +incdir+$(YAML_DIR)
+              +incdir+$(YAML_DIR) \
+              +incdir+$(TUE_DIR) \
+              +incdir+$(TVIP_APB_DIR) \
+              +incdir+$(ROOT_DIR)/tests/bus_pkg \
+              $(TVIP_APB_DEFINES)
   RUN = ./simv_$(PKG)
   RUN_OPTS = +UVM_TESTNAME=$(TEST)
 else ifeq ($(SIM),xcelium)
@@ -90,6 +108,7 @@ endif
 REGRESSION_TESTS = \
 	archway_core_pkg/test_archway_config_base \
 	bus_pkg/test_bus_pkg_full \
+	bus_pkg/test_bus_apb \
 	map_pkg/test_map_pkg \
 	archway_pkg/test_archway_pkg \
 	archway_pkg/test_archway_yaml

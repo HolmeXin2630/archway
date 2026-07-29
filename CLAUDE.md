@@ -44,9 +44,15 @@ make -C run clean
 
 ## Dependencies
 
-使用 Zephyr West 管理外部依赖（当前只有 sv_serde）。
+使用 Zephyr West 管理外部依赖。
 
 ```bash
 west init -l .
 west update
 ```
+
+| 依赖 | 路径 | 用途 |
+|------|------|------|
+| sv_serde | `lib/sv_serde` | YAML 序列化（核心依赖） |
+| tue | `tests/bus_pkg/lib/tue` | UVM 扩展库（tvip-apb 依赖） |
+| tvip-apb | `tests/bus_pkg/lib/tvip-apb` | APB VIP（bus_pkg 测试用） |
