@@ -40,7 +40,7 @@ Archway 是一个通用的 SoC 验证框架，旨在把 SoC 验证中每个项�
 - `archway_config_base`
 
 ### 4. `archway_pkg`
-框架顶层组装 package，负责统一装配和生命周期控制：
+框架顶层组装，负责统一装配和生命周期控制：
 - `archway_env`：统一装配容器
 - `ARCHWAY` Facade：框架级资源入口
 - 接收项目 env 的组件启用信息
