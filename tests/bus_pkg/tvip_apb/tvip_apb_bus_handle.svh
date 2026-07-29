@@ -1,19 +1,19 @@
 // =============================================================================
-// tvip-apb Master Bridge
+// tvip-apb Bus Handle
 // =============================================================================
 // Description: Concrete implementation of bus_master_handle that delegates
 //              bus access to a tvip-apb master sequencer.
 // =============================================================================
 
-`ifndef TVIP_APB_MASTER_BRIDGE_SVH
-`define TVIP_APB_MASTER_BRIDGE_SVH
+`ifndef TVIP_APB_BUS_HANDLE_SVH
+`define TVIP_APB_BUS_HANDLE_SVH
 
 // Internal sequence to send a single APB transaction
-class tvip_apb_bridge_seq extends uvm_sequence #(tvip_apb_master_item);
+class tvip_apb_bus_handle_seq extends uvm_sequence #(tvip_apb_master_item);
 
   tvip_apb_master_item  item;
 
-  `uvm_object_utils(tvip_apb_bridge_seq)
+  `uvm_object_utils(tvip_apb_bus_handle_seq)
 
   function new(string name = "");
     super.new(name);
@@ -26,12 +26,12 @@ class tvip_apb_bridge_seq extends uvm_sequence #(tvip_apb_master_item);
 
 endclass
 
-// Bridge class
-class tvip_apb_master_bridge extends bus_master_handle;
+// Bus handle class
+class tvip_apb_bus_handle extends bus_master_handle;
 
   protected tvip_apb_master_sequencer  m_sequencer;
 
-  `uvm_object_utils(tvip_apb_master_bridge)
+  `uvm_object_utils(tvip_apb_bus_handle)
 
   function new(
     string                        name = "",
@@ -51,8 +51,8 @@ class tvip_apb_master_bridge extends bus_master_handle;
     input  bus_data_t     data,
     input  int unsigned   n_bytes = 0
   );
-    tvip_apb_bridge_seq  seq;
-    tvip_apb_master_item item;
+    tvip_apb_bus_handle_seq  seq;
+    tvip_apb_master_item     item;
 
     item            = tvip_apb_master_item::type_id::create("item");
     item.direction  = TVIP_APB_WRITE;
@@ -60,7 +60,7 @@ class tvip_apb_master_bridge extends bus_master_handle;
     item.data       = tvip_apb_data'(data);
     item.strobe     = '1;
 
-    seq       = tvip_apb_bridge_seq::type_id::create("seq");
+    seq       = tvip_apb_bus_handle_seq::type_id::create("seq");
     seq.item  = item;
     seq.start(m_sequencer);
 
@@ -77,14 +77,14 @@ class tvip_apb_master_bridge extends bus_master_handle;
     output bus_data_t     data,
     input  int unsigned   n_bytes = 0
   );
-    tvip_apb_bridge_seq  seq;
-    tvip_apb_master_item item;
+    tvip_apb_bus_handle_seq  seq;
+    tvip_apb_master_item     item;
 
     item            = tvip_apb_master_item::type_id::create("item");
     item.direction  = TVIP_APB_READ;
     item.address    = tvip_apb_address'(addr);
 
-    seq       = tvip_apb_bridge_seq::type_id::create("seq");
+    seq       = tvip_apb_bus_handle_seq::type_id::create("seq");
     seq.item  = item;
     seq.start(m_sequencer);
 
@@ -110,7 +110,7 @@ class tvip_apb_master_bridge extends bus_master_handle;
     input  bus_burst_kind_e     burst_kind = BUS_BURST_INCR
   );
     status = BUS_UNSUPPORTED;
-    `uvm_warning("TVIP_APB_BRIDGE",
+    `uvm_warning("TVIP_APB_BUS_HANDLE",
       "Burst write not supported by APB backend")
   endtask
 
@@ -124,10 +124,10 @@ class tvip_apb_master_bridge extends bus_master_handle;
   );
     data   = new[num_beats];
     status = BUS_UNSUPPORTED;
-    `uvm_warning("TVIP_APB_BRIDGE",
+    `uvm_warning("TVIP_APB_BUS_HANDLE",
       "Burst read not supported by APB backend")
   endtask
 
 endclass
 
-`endif // TVIP_APB_MASTER_BRIDGE_SVH
+`endif // TVIP_APB_BUS_HANDLE_SVH

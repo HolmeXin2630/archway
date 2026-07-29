@@ -2,7 +2,7 @@
 // tvip-apb Test Environment
 // =============================================================================
 // Description: Assembles tvip-apb master agent, slave memory model, and
-//              master bridge. Registers bridge with BUS facade.
+//              bus handle. Registers handle with BUS facade.
 // =============================================================================
 
 `ifndef TVIP_APB_ENV_SVH
@@ -20,7 +20,7 @@ class tvip_apb_env extends uvm_env;
   // Components
   tvip_apb_master_agent   master_agent;
   tvip_apb_slave_mem      slave_mem;
-  tvip_apb_master_bridge  bridge;
+  tvip_apb_bus_handle     bus_handle;
 
   `uvm_component_utils(tvip_apb_env)
 
@@ -53,12 +53,12 @@ class tvip_apb_env extends uvm_env;
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
 
-    // Create bridge and register with BUS facade
-    bridge = new(
+    // Create bus handle and register with BUS facade
+    bus_handle = new(
       .name  (master_name),
       .sqr   (master_agent.sequencer)
     );
-    BUS::register(master_name, bridge);
+    BUS::register(master_name, bus_handle);
 
     // Connect slave_mem to vif
     slave_mem.vif         = vif;

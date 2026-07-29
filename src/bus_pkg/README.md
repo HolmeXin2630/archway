@@ -11,7 +11,7 @@ BUS::master("apb0").write(addr, data)    ← 统一 API
   ↓
 bus_master_handle.try_write()             ← 抽象接口
   ↓
-tvip_apb_master_bridge.try_write()        ← 具体后端
+tvip_apb_bus_handle.try_write()           ← 具体后端
   ↓
 APB bus → DUT
 ```
@@ -23,7 +23,7 @@ APB bus → DUT
 继承 `bus_master_handle`，实现 `try_write` 和 `try_read`：
 
 ```systemverilog
-class my_vip_master_bridge extends bus_master_handle;
+class my_vip_bus_handle extends bus_master_handle;
 
   protected my_vip_sequencer m_sequencer;
 
@@ -75,22 +75,22 @@ endclass
 
 ### 2. 创建测试环境
 
-在 env 中实例化 VIP agent 和 bridge，注册到 `BUS` Facade：
+在 env 中实例化 VIP agent 和 bus handle，注册到 `BUS` Facade：
 
 ```systemverilog
 class my_vip_env extends uvm_env;
 
-  my_vip_agent        master_agent;
-  my_vip_master_bridge bridge;
+  my_vip_agent       master_agent;
+  my_vip_bus_handle  bus_handle;
 
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
 
-    // 创建 bridge，传入 sequencer
-    bridge = new(.name("axi0"), .sqr(master_agent.sequencer));
+    // 创建 bus handle，传入 sequencer
+    bus_handle = new(.name("axi0"), .sqr(master_agent.sequencer));
 
     // 注册到 BUS Facade
-    BUS::register("axi0", bridge);
+    BUS::register("axi0", bus_handle);
   endfunction
 
 endclass
@@ -129,17 +129,17 @@ endclass
 
 ### 4. 替换 VIP 后端
 
-只需更换 env 中的 bridge 实现，测试代码无需修改：
+只需更换 env 中的 bus handle 实现，测试代码无需修改：
 
 ```systemverilog
 // 项目 A 使用 tvip-apb
-BUS::register("master0", tvip_apb_bridge);
+BUS::register("master0", tvip_apb_bus_handle_inst);
 
 // 项目 B 使用 Synopsys AXI SVT
-BUS::register("master0", svt_axi_bridge);
+BUS::register("master0", svt_axi_bus_handle_inst);
 
 // 项目 C 使用自定义 VIP
-BUS::register("master0", custom_bridge);
+BUS::register("master0", custom_bus_handle_inst);
 
 // 测试代码完全不变
 mh = BUS::master("master0");
@@ -148,7 +148,7 @@ mh.write(addr, data, 4);
 
 ## 宽度处理
 
-`bus_data_t` 是 1024-bit，`bus_addr_t` 是 64-bit。后端 bridge 负责截断/扩展到实际 VIP 宽度：
+`bus_data_t` 是 1024-bit，`bus_addr_t` 是 64-bit。后端 bus handle 负责截断/扩展到实际 VIP 宽度：
 
 ```systemverilog
 // APB 32-bit data
@@ -165,7 +165,7 @@ data = bus_data_t'(item.data);           // 零扩展到 1024-bit
 
 | 文件 | 说明 |
 |------|------|
-| `tvip_apb_master_bridge.svh` | APB 后端 bridge 实现 |
+| `tvip_apb_bus_handle.svh` | APB 后端 bus handle 实现 |
 | `tvip_apb_slave_mem.svh` | APB slave memory model |
 | `tvip_apb_env.svh` | 测试环境组装 |
 | `../test_bus_apb.sv` | 测试用例 |

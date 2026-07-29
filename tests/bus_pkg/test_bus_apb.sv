@@ -13,7 +13,7 @@ module test_bus_apb;
   import tvip_apb_pkg::*;
 
   // Include test infrastructure
-  `include "tvip_apb/tvip_apb_master_bridge.svh"
+  `include "tvip_apb/tvip_apb_bus_handle.svh"
   `include "tvip_apb/tvip_apb_slave_mem.svh"
   `include "tvip_apb/tvip_apb_env.svh"
 
