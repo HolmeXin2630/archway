@@ -67,6 +67,28 @@ Archway 是一个通用的 SoC 验证框架，旨在把 SoC 验证中每个项�
 - 框架内部成员变量使用 `m_` 前缀
 - 作用域分隔符固定为 `.`
 
+## Testcase 参数语言
+
+**TC 绑定路径（param path）**：
+config 节点在 testcase 参数树中的完整地址。顶层路径由用户提供，nested 路径由父节点关系派生；任何已绑定节点都可以独立重放自己的 testcase 参数。
+_Avoid_: root name、object name、class name
+
+**TC 可配置字段**：
+config 中明确声明允许由 testcase 参数覆盖的字段；未声明字段不属于 testcase 参数接口。
+_Avoid_: 自动暴露字段
+
+**TC 参数库**：
+仿真开始时保存已解析 testcase 参数，并按 TC 绑定路径将字段值提供给 config 的单例参数集合。
+_Avoid_: config registry
+
+**TC 参数树**：
+由 config 的成员组合形成、并由 TC 绑定路径寻址的稳定配置结构；节点首次绑定后不再移动或共享到其他路径。
+_Avoid_: 动态对象图
+
+**TC 最终优先**：
+config 可以重复重放 testcase 参数，使明确给出的 TC 值成为构造或随机化之后的最终配置值。
+_Avoid_: 自动关闭随机化
+
 ## v1 非目标
 
 - 目标级组合 Facade

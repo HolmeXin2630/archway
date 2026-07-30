@@ -1,0 +1,8 @@
+-ARC_PARAM:broken_line
+-ARC_PARAM:invalid_cfg.start_ms=not_an_int
+-ARC_PARAM:invalid_cfg.ratio=not_a_real
+-ARC_PARAM:invalid_cfg.sat_type=NOT_A_MODE
+-ARC_PARAM:invalid_cfg.run_list[-1]=99
+-ARC_PARAM:invalid_cfg.run_num=not_an_int
+-ARC_PARAM:invalid_cfg.run_num=17
+-ARC_PARAM:invalid_cfg.lanes[0]=missing_tail

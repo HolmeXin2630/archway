@@ -1,5 +1,5 @@
 class arc_param_item;
-  string obj_name;
+  string param_name;
   string path;
   string value;
   string file;
@@ -7,5 +7,6 @@ class arc_param_item;
   bit used;
   bit matched;
   bit unknown_reported;
+  bit invalid_reported;
   bit unused_reported;
 endclass

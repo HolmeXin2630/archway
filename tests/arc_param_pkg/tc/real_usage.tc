@@ -1,3 +1,4 @@
+# The testbench parses this file before constructing any config.
 -ARC_PARAM:tch0_tap0_opt.run_num=1
 -ARC_PARAM:tch0_tap0_opt.start_ms=0
 -ARC_PARAM:tch0_tap0_opt.end_ms=80
@@ -9,3 +10,4 @@
 -ARC_PARAM:tch0_tap0_opt.run_list[1]=20
 -ARC_PARAM:tch0_tap0_opt.sub_cfg.delay=5
 -ARC_PARAM:tch0_tap0_opt.unknown_field=99
+-ARC_PARAM:tch1_tap0_opt.run_num=2

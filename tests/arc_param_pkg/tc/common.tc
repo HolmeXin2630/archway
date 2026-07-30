@@ -1,0 +1,20 @@
+# Collection, nested queue, path binding, and randomize scenarios.
+-ARC_PARAM:collection_cfg.int_queue={1,2,3}
+-ARC_PARAM:collection_cfg.real_queue={0.5,1.25}
+-ARC_PARAM:collection_cfg.string_queue={"a,b",c}
+-ARC_PARAM:collection_cfg.int_array={4,5}
+-ARC_PARAM:collection_cfg.real_array={2.5,3.75}
+-ARC_PARAM:collection_cfg.string_array={one,"two,three"}
+-ARC_PARAM:collection_cfg.int_array[2]=6
+-ARC_PARAM:collection_cfg.weight["tap0"]=7
+-ARC_PARAM:collection_cfg.weight_ratio["tap0"]=0.5
+-ARC_PARAM:collection_cfg.alias_name["tap0"]="fast"
+-ARC_PARAM:collection_cfg.lanes[1].run_num=9
+-ARC_PARAM:collection_cfg.precreated_lanes[0].run_num=3
+-ARC_PARAM:bound_cfg.sub_cfg.delay=7
+-ARC_PARAM:bound_cfg.lanes[1].run_num=11
+-ARC_PARAM:second_cfg.sub_cfg.delay=12
+-ARC_PARAM:shared.delay=8
+-ARC_PARAM:base_rand.run_num=37
+-ARC_PARAM:override_rand.run_num=52
+-ARC_PARAM:single.delay=4

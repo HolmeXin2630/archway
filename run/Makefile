@@ -56,6 +56,7 @@ BUS_PKG = $(ROOT_DIR)/src/bus_pkg/bus_pkg.sv
 MAP_PKG = $(ROOT_DIR)/src/map_pkg/map_pkg.sv
 ARCHWAY_PKG = $(ROOT_DIR)/src/archway_pkg/archway_pkg.sv
 ARC_PARAM_PKG = $(ROOT_DIR)/src/arc_param_pkg/arc_param_pkg.sv
+ARC_PARAM_TEST_PKG = $(ROOT_DIR)/tests/arc_param_pkg/arc_param_test_pkg.sv
 
 # tvip-apb packages (for APB backend tests)
 TUE_PKG = $(TUE_DIR)/tue_pkg.sv
@@ -64,6 +65,11 @@ TVIP_APB_PKG = $(TVIP_APB_DIR)/tvip_apb_pkg.sv
 # All SV source files
 SV_FILES = $(SERDE_PKG) $(YAML_PKG) $(TUE_PKG) $(TVIP_APB_PKG) \
            $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARCHWAY_PKG) $(ARC_PARAM_PKG)
+
+# ARC_PARAM is a standalone pure-SV package; its tests need neither UVM nor
+# the YAML DPI dependency graph.
+COMPILE_SV_FILES = $(if $(filter arc_param_pkg,$(PKG)),$(ARC_PARAM_PKG),$(SV_FILES))
+COMPILE_DPI_FILES = $(if $(filter arc_param_pkg,$(PKG)),,$(DPI_FILES))
 
 # DPI C++ source files
 DPI_FILES = $(YAML_DPI) $(SERDE_DPI)
@@ -75,7 +81,7 @@ DPI_FILES = $(YAML_DPI) $(SERDE_DPI)
 ifeq ($(SIM),vcs)
   UVM_HOME = /opt/synopsys/vcs/W-2024.09/etc/uvm-1.2
   VCS = vcs
-  VCS_FLAGS = -sverilog -full64 -ntb_opts uvm-1.2 \
+  VCS_FLAGS = -sverilog -full64 $(if $(filter arc_param_pkg,$(PKG)),,-ntb_opts uvm-1.2) \
               +incdir+$(ROOT_DIR)/src/archway_core_pkg \
               +incdir+$(ROOT_DIR)/src/bus_pkg \
               +incdir+$(ROOT_DIR)/src/map_pkg \
@@ -86,6 +92,7 @@ ifeq ($(SIM),vcs)
               +incdir+$(TUE_DIR) \
               +incdir+$(TVIP_APB_DIR) \
               +incdir+$(ROOT_DIR)/tests/bus_pkg \
+              +incdir+$(ROOT_DIR)/tests/arc_param_pkg \
               $(TVIP_APB_DEFINES)
   RUN = ./simv_$(PKG)
   RUN_OPTS = +UVM_TESTNAME=$(TEST)
@@ -127,9 +134,10 @@ compile:
 	@mkdir -p $(SIM_DIR)
 	@echo "=== Compiling $(PKG) ==="
 	cd $(SIM_DIR) && $(VCS) $(VCS_FLAGS) -CFLAGS "$(YAML_CFLAGS)" \
-		$(SV_FILES) \
+		$(COMPILE_SV_FILES) \
+		$(if $(filter arc_param_pkg,$(PKG)),$(ARC_PARAM_TEST_PKG)) \
 		$(ROOT_DIR)/tests/$(PKG)/$(TEST).sv \
-		$(DPI_FILES) \
+		$(COMPILE_DPI_FILES) \
 		-top $(TEST) \
 		-Mdir=csrc_$(PKG)_$(TEST) \
 		-o simv_$(PKG)_$(TEST) \
@@ -172,23 +180,22 @@ regression:
 	if [ $$fail -ne 0 ]; then exit 1; fi
 
 ARC_PARAM_TESTS = \
-	test_arc_param_phase1 \
-	test_arc_param_codec \
-	test_arc_param_tokenizer \
-	test_arc_param_array_assign \
-	test_arc_param_collection_path \
-	test_arc_param_assoc_object \
-	test_arc_param_diagnostics \
-	test_arc_param_bad_line \
-	test_arc_param_negative
+	test_arc_param_real_usage \
+	test_arc_param_collections_usage \
+	test_arc_param_override_usage \
+	test_arc_param_randomize_usage \
+	test_arc_param_binding_usage \
+	test_arc_param_diagnostics_usage \
+	test_arc_param_invalid_usage \
+	test_arc_param_codec_unit \
+	test_arc_param_tokenizer_unit
 
 arc_param_regression:
 	@pass=0; fail=0; \
 	for tst in $(ARC_PARAM_TESTS); do \
 		echo "--- Running: arc_param_pkg/$$tst ---"; \
 		rm -rf $(SIM_DIR)/csrc_arc_param_pkg_$$tst $(SIM_DIR)/simv_arc_param_pkg_$$tst $(SIM_DIR)/simv_arc_param_pkg_$$tst.daidir; \
-		if $(MAKE) compile SIM=vcs PKG=arc_param_pkg TEST=$$tst > /dev/null 2>&1 && \
-		   $(MAKE) run SIM=vcs PKG=arc_param_pkg TEST=$$tst 2>&1 | grep -q "PASS"; then \
+		if $(MAKE) run SIM=vcs PKG=arc_param_pkg TEST=$$tst 2>&1 | grep -q "PASS"; then \
 			echo "  ✓ PASS: arc_param_pkg/$$tst"; pass=$$((pass + 1)); \
 		else \
 			echo "  ✗ FAIL: arc_param_pkg/$$tst"; fail=$$((fail + 1)); \
