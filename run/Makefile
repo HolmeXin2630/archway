@@ -16,7 +16,7 @@ ROOT_DIR := $(shell cd .. && pwd)
 # Simulation output directory
 SIM_DIR = $(ROOT_DIR)/run/sim
 
-# Package name (archway_core_pkg, bus_pkg, map_pkg, archway_pkg)
+# Package name (archway_core_pkg, bus_pkg, map_pkg, archway_pkg, arc_param_pkg)
 PKG ?= archway_pkg
 
 # Test name
@@ -55,6 +55,7 @@ ARCHWAY_CORE_PKG = $(ROOT_DIR)/src/archway_core_pkg/archway_core_pkg.sv
 BUS_PKG = $(ROOT_DIR)/src/bus_pkg/bus_pkg.sv
 MAP_PKG = $(ROOT_DIR)/src/map_pkg/map_pkg.sv
 ARCHWAY_PKG = $(ROOT_DIR)/src/archway_pkg/archway_pkg.sv
+ARC_PARAM_PKG = $(ROOT_DIR)/src/arc_param_pkg/arc_param_pkg.sv
 
 # tvip-apb packages (for APB backend tests)
 TUE_PKG = $(TUE_DIR)/tue_pkg.sv
@@ -62,7 +63,7 @@ TVIP_APB_PKG = $(TVIP_APB_DIR)/tvip_apb_pkg.sv
 
 # All SV source files
 SV_FILES = $(SERDE_PKG) $(YAML_PKG) $(TUE_PKG) $(TVIP_APB_PKG) \
-           $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARCHWAY_PKG)
+           $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARCHWAY_PKG) $(ARC_PARAM_PKG)
 
 # DPI C++ source files
 DPI_FILES = $(YAML_DPI) $(SERDE_DPI)
@@ -79,6 +80,7 @@ ifeq ($(SIM),vcs)
               +incdir+$(ROOT_DIR)/src/bus_pkg \
               +incdir+$(ROOT_DIR)/src/map_pkg \
               +incdir+$(ROOT_DIR)/src/archway_pkg \
+              +incdir+$(ROOT_DIR)/src/arc_param_pkg \
               +incdir+$(SERDE_DIR) \
               +incdir+$(YAML_DIR) \
               +incdir+$(TUE_DIR) \
@@ -117,7 +119,7 @@ REGRESSION_TESTS = \
 # Targets
 # =============================================================================
 
-.PHONY: all compile run clean help regression
+.PHONY: all compile run clean help regression arc_param_regression
 
 all: compile run
 
@@ -129,15 +131,16 @@ compile:
 		$(ROOT_DIR)/tests/$(PKG)/$(TEST).sv \
 		$(DPI_FILES) \
 		-top $(TEST) \
-		-o simv_$(PKG) \
+		-Mdir=csrc_$(PKG)_$(TEST) \
+		-o simv_$(PKG)_$(TEST) \
 		-l vcs_$(PKG).log
 
 run: compile
 	@echo "=== Running $(TEST) ==="
-	cd $(SIM_DIR) && $(RUN) $(RUN_OPTS)
+	cd $(SIM_DIR) && ./simv_$(PKG)_$(TEST) $(RUN_OPTS)
 
 clean:
-	rm -rf $(SIM_DIR)/simv_* $(SIM_DIR)/csrc $(SIM_DIR)/*.log $(SIM_DIR)/*.daidir $(SIM_DIR)/*.h $(SIM_DIR)/*.key
+	rm -rf $(SIM_DIR)/simv_* $(SIM_DIR)/csrc* $(SIM_DIR)/*.log $(SIM_DIR)/*.daidir $(SIM_DIR)/*.h $(SIM_DIR)/*.key
 
 # Run all regression tests
 regression:
@@ -167,6 +170,32 @@ regression:
 	echo "  Total:  $$((pass + fail))"; \
 	echo "========================================"; \
 	if [ $$fail -ne 0 ]; then exit 1; fi
+
+ARC_PARAM_TESTS = \
+	test_arc_param_phase1 \
+	test_arc_param_codec \
+	test_arc_param_tokenizer \
+	test_arc_param_array_assign \
+	test_arc_param_collection_path \
+	test_arc_param_assoc_object \
+	test_arc_param_diagnostics \
+	test_arc_param_bad_line \
+	test_arc_param_negative
+
+arc_param_regression:
+	@pass=0; fail=0; \
+	for tst in $(ARC_PARAM_TESTS); do \
+		echo "--- Running: arc_param_pkg/$$tst ---"; \
+		rm -rf $(SIM_DIR)/csrc_arc_param_pkg_$$tst $(SIM_DIR)/simv_arc_param_pkg_$$tst $(SIM_DIR)/simv_arc_param_pkg_$$tst.daidir; \
+		if $(MAKE) compile SIM=vcs PKG=arc_param_pkg TEST=$$tst > /dev/null 2>&1 && \
+		   $(MAKE) run SIM=vcs PKG=arc_param_pkg TEST=$$tst 2>&1 | grep -q "PASS"; then \
+			echo "  ✓ PASS: arc_param_pkg/$$tst"; pass=$$((pass + 1)); \
+		else \
+			echo "  ✗ FAIL: arc_param_pkg/$$tst"; fail=$$((fail + 1)); \
+		fi; \
+	done; \
+	if [ $$fail -ne 0 ]; then exit 1; fi; \
+	echo "ARC_PARAM VCS regression PASS"
 
 help:
 	@echo "Archway Makefile"
