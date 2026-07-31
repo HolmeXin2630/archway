@@ -2,6 +2,19 @@
 
 `arc_param_pkg` 将 `.tc` 文件中的参数绑定到 SystemVerilog config。config 通过继承 `arc_param_config` 和字段宏明确声明可由 testcase 覆盖的字段。
 
+## 当前进展
+
+ARC_PARAM v1 已实现并完成 VCS 验证：
+
+- 已提供 scalar、queue、dynamic array、assoc、nested config 和 sub-config queue 参数注入。
+- 已提供构造期加载、`post_randomize()` 自动重放、稳定路径绑定、重复键覆盖及诊断/strict 模式。
+- 真实场景测试覆盖标准使用、集合、TC 覆盖、randomize、路径绑定、诊断和非法输入；codec/tokenizer 保留独立单元测试。
+- 在仓库根目录执行下列命令可运行全部九个 test top，成功时打印 `ARC_PARAM VCS regression PASS`：
+
+  ```text
+  make -C run arc_param_regression SIM=vcs
+  ```
+
 ## 启动顺序
 
 环境必须在所有 phase 和所有 config 构造之前解析 TC：
