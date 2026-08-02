@@ -502,7 +502,7 @@ arc_param_match_index
 arc_param_match_string_key
 ```
 
-不得在 class 外暴露 `automatic function`。
+所有工具函数都使用 `static function`，不使用 `automatic function`。
 
 ## 5. 必须实现的字段宏
 
@@ -855,7 +855,7 @@ test_arc_param_tokenizer_unit.sv
 - [ ] 一个 class 一个文件。
 - [ ] 仅保留一个 `arc_param_utils.svh`。
 - [ ] 工具函数全部位于 `arc_param_utils` class 内。
-- [ ] class 外没有独立 `automatic function`。
+- [ ] 不存在 `automatic function`；工具函数均为 `arc_param_utils` 内的 `static function`。
 - [ ] package 文件只做 include、前向声明和全局 DB。
 
 API：
