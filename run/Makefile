@@ -86,7 +86,7 @@ DPI_FILES = $(YAML_DPI) $(SERDE_DPI)
 ifeq ($(SIM),vcs)
   UVM_HOME = /opt/synopsys/vcs/W-2024.09/etc/uvm-1.2
   VCS = vcs
-  VCS_FLAGS = -sverilog -full64 $(if $(filter arc_param_pkg,$(PKG)),,-ntb_opts uvm-1.2) \
+  VCS_FLAGS = -sverilog -full64 -timescale=1ns/1ps $(if $(filter arc_param_pkg,$(PKG)),,-ntb_opts uvm-1.2) \
               $(TEST_DEFINES) \
               +incdir+$(ROOT_DIR)/src/archway_core_pkg \
               +incdir+$(ROOT_DIR)/src/bus_pkg \
