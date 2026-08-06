@@ -21,6 +21,7 @@ PKG ?= archway_pkg
 
 # Test name
 TEST ?= test_archway_yaml
+TEST_DEFINES = $(if $(filter test_crg_pkg_high_precision,$(TEST)),+define+ARC_CRG_HIGH_PRECISION)
 
 # =============================================================================
 # sv_serde library paths (managed by west)
@@ -55,6 +56,7 @@ ARCHWAY_CORE_PKG = $(ROOT_DIR)/src/archway_core_pkg/archway_core_pkg.sv
 BUS_PKG = $(ROOT_DIR)/src/bus_pkg/bus_pkg.sv
 MAP_PKG = $(ROOT_DIR)/src/map_pkg/map_pkg.sv
 ARC_CLK_IF = $(ROOT_DIR)/src/crg_pkg/arc_clk_if.sv
+ARC_RST_IF = $(ROOT_DIR)/src/crg_pkg/arc_rst_if.sv
 CRG_PKG = $(ROOT_DIR)/src/crg_pkg/crg_pkg.sv
 ARCHWAY_PKG = $(ROOT_DIR)/src/archway_pkg/archway_pkg.sv
 ARC_PARAM_PKG = $(ROOT_DIR)/src/arc_param_pkg/arc_param_pkg.sv
@@ -66,7 +68,7 @@ TVIP_APB_PKG = $(TVIP_APB_DIR)/tvip_apb_pkg.sv
 
 # All SV source files
 SV_FILES = $(SERDE_PKG) $(YAML_PKG) $(TUE_PKG) $(TVIP_APB_PKG) \
-           $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARC_CLK_IF) $(CRG_PKG) \
+           $(ARCHWAY_CORE_PKG) $(BUS_PKG) $(MAP_PKG) $(ARC_CLK_IF) $(ARC_RST_IF) $(CRG_PKG) \
            $(ARCHWAY_PKG) $(ARC_PARAM_PKG)
 
 # ARC_PARAM is a standalone pure-SV package; its tests need neither UVM nor
@@ -85,6 +87,7 @@ ifeq ($(SIM),vcs)
   UVM_HOME = /opt/synopsys/vcs/W-2024.09/etc/uvm-1.2
   VCS = vcs
   VCS_FLAGS = -sverilog -full64 $(if $(filter arc_param_pkg,$(PKG)),,-ntb_opts uvm-1.2) \
+              $(TEST_DEFINES) \
               +incdir+$(ROOT_DIR)/src/archway_core_pkg \
               +incdir+$(ROOT_DIR)/src/bus_pkg \
               +incdir+$(ROOT_DIR)/src/map_pkg \
@@ -125,6 +128,9 @@ REGRESSION_TESTS = \
 	bus_pkg/test_bus_apb \
 	map_pkg/test_map_pkg \
 	crg_pkg/test_crg_pkg \
+	crg_pkg/test_crg_pkg_validation \
+	crg_pkg/test_crg_pkg_reset_readiness \
+	crg_pkg/test_crg_pkg_high_precision \
 	archway_pkg/test_archway_pkg \
 	archway_pkg/test_archway_yaml
 

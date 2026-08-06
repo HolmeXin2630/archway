@@ -18,7 +18,10 @@ class arc_crg_manager extends uvm_component;
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    ARC_CLKS::run_all();
+    fork
+      ARC_CLKS::run_all();
+      ARC_RSTS::run_all();
+    join
   endtask
 
 endclass

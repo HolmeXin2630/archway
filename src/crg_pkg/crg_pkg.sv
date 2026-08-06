@@ -18,6 +18,8 @@ package crg_pkg;
   `include "arc_crg_time_utils.svh"
   `include "arc_clk_source.svh"
   `include "arc_clks_facade.svh"
+  `include "arc_rst_source.svh"
+  `include "arc_rsts_facade.svh"
   `include "arc_crg_manager.svh"
 
 endpackage
