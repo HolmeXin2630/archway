@@ -14,6 +14,7 @@ package archway_pkg;
   // Import dependent packages
   import bus_pkg::*;
   import map_pkg::*;
+  import crg_pkg::*;
   import sv_yaml_pkg::*;
 
   // Include archway components

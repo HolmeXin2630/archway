@@ -19,6 +19,9 @@ class archway_env extends uvm_env;
   protected bit m_bus_enabled = 0;
   protected bit m_map_enabled = 0;
 
+  // Simulation-wide clock/reset runner
+  protected arc_crg_manager m_crg_manager;
+
   // YAML paths for components
   protected string m_bus_yaml_path = "";
   protected string m_map_yaml_path = "";
@@ -40,6 +43,8 @@ class archway_env extends uvm_env;
 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
+
+    m_crg_manager = arc_crg_manager::get_or_create(this);
 
     // Call project configuration hook
     configure_archway();
